@@ -149,6 +149,20 @@ se edita la función `modoPara()` en `index.html`.
 > El **Black Market** y otros eventos de tienda/progresión no cambian la rotación de
 > modos, así que no requieren cambios en la página.
 
+## Vista en celular e "instalar como app"
+
+La página es 100% responsive (probada en 320, 360, 390 px y escritorio): tipografía fluida,
+filas de dos líneas con el mapa debajo del modo, y botones/etiquetas adaptados al tacto.
+
+Además puede **instalarse como app** (PWA) desde el celular:
+
+- **Android (Chrome)**: abre la página → menú ⋮ → **Añadir a pantalla de inicio** → *Instalar*.
+- **iPhone (Safari)**: abre la página → botón Compartir → **Añadir a pantalla de inicio**.
+- Quedará el ícono del juego (modo TDM) y se abrirá a pantalla completa, sin barra del navegador.
+
+Archivos que lo hacen posible: `manifest.json` + `assets/icon-180.png` (iOS),
+`assets/icon-192.png` y `assets/icon-512.png` (Android).
+
 ## Personalización
 
 Todo está dentro de `index.html`:
@@ -168,12 +182,16 @@ Todo está dentro de `index.html`:
 ```
 Metal/
 ├── index.html          # la página (HTML + CSS + JS, sin dependencias)
+├── manifest.json       # manifiesto PWA (instalable como app)
 ├── rotacion.json       # calendario semanal de modo+mapa (generado del juego)
 ├── eventos.json        # reglas de eventos/LTM (editable sin tocar el HTML)
 ├── README.md
 ├── tools/
 │   └── actualizar-rotacion.py   # regenera rotacion.json tras un parche del juego
 └── assets/
+    ├── icon-192.png    # íconos de la app (pantalla de inicio / PWA)
+    ├── icon-512.png
+    ├── icon-180.png
     ├── icon-tdm.png    # íconos de modo (máscaras blancas, se tiñen por CSS)
     ├── icon-as.png
     ├── icon-pt.png

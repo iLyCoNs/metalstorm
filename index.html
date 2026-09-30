@@ -2,10 +2,16 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Metalstorm — Rotación de modos en vivo</title>
 <meta name="description" content="Rotación en vivo de los modos de Metalstorm (Team Deathmatch, Air Superiority, Priority Target y más) con temporizador a la próxima rotación.">
 <meta name="theme-color" content="#0b1016">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Metalstorm">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b1016'/%3E%3Cpath d='M14 40l18-20 18 20-18-8z' fill='%234fc3f7'/%3E%3C/svg%3E">
 <link rel="preload" as="image" href="assets/bg-tdm.png">
 <link rel="preload" as="image" href="assets/bg-as.png">
@@ -23,8 +29,9 @@
     --mono:'Consolas','SF Mono','JetBrains Mono',ui-monospace,monospace;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
+  html{margin:0;padding:0;-webkit-text-size-adjust:100%}
   body{
+    margin:0;padding:0;
     min-height:100vh;
     background:
       radial-gradient(1200px 600px at 80% -10%, rgba(79,195,247,.12), transparent 60%),
@@ -33,9 +40,10 @@
     color:var(--text);
     font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;
     display:flex;justify-content:center;
-    padding:32px 16px 48px;
+    padding:32px max(16px, env(safe-area-inset-right)) calc(48px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    -webkit-tap-highlight-color:rgba(255,255,255,.08);
   }
-  main{width:100%;max-width:760px}
+  main{width:100%;max-width:760px;min-width:0}
   header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
   h1{font-size:15px;letter-spacing:.22em;text-transform:uppercase;margin:0;color:var(--muted);font-weight:600}
   h1 b{color:var(--text)}
@@ -107,7 +115,7 @@
     transition:background-color .5s ease;
   }
   .names{min-width:0}
-  .names .es{font-size:24px;font-weight:700;line-height:1.15}
+  .names .es{font-size:clamp(19px, 5.6vw, 24px);font-weight:700;line-height:1.15}
   .names .en{font-size:13px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
   .badge{
     margin-left:auto;
@@ -139,7 +147,7 @@
 
   .timer-row{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-top:18px;flex-wrap:wrap}
   .timer-label{font-size:12px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
-  .timer{font-family:var(--mono);font-size:44px;font-weight:700;line-height:1;letter-spacing:.04em;
+  .timer{font-family:var(--mono);font-size:clamp(33px, 10vw, 44px);font-weight:700;line-height:1;letter-spacing:.04em;
          text-shadow:0 0 26px color-mix(in srgb, var(--accent) 45%, transparent)}
   .next{text-align:right}
   .next .lbl{font-size:12px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
@@ -167,7 +175,12 @@
     transition:background .18s ease, transform .18s ease;
   }
   ul.schedule li:last-child{border-bottom:0}
-  ul.schedule li:hover{background:rgba(255,255,255,.045);transform:translateX(2px)}
+  @media (hover:hover){
+    ul.schedule li:hover{background:rgba(255,255,255,.045);transform:translateX(2px)}
+  }
+  @media (hover:none){
+    ul.schedule li:active{background:rgba(255,255,255,.07)}
+  }
   ul.schedule li.now{background:color-mix(in srgb, var(--accent) 10%, transparent)}
   ul.schedule .t{font-family:var(--mono);font-size:12.5px;color:var(--muted);min-width:112px}
   ul.schedule .ico{
@@ -199,10 +212,45 @@
   .note{border:1px dashed var(--line);border-radius:12px;padding:12px 14px;margin-top:18px;font-size:12.5px;color:var(--muted);line-height:1.65}
   .note b{color:var(--text)}
   @media (max-width:560px){
-    .timer{font-size:36px}
-    .next{text-align:left}
-    ul.schedule .t{min-width:92px}
-    .names .es{font-size:20px}
+    body{padding-top:20px}
+    .card{padding:18px 16px 15px;border-left-width:5px}
+    .top{flex-wrap:nowrap;align-items:flex-start;gap:12px}
+    .mode-icon-wrap{width:52px;height:52px;border-radius:13px}
+    .mode-icon{width:32px;height:32px}
+    .names{flex:1;min-width:0}
+    .badge{margin-left:6px;padding:6px 9px;font-size:12px}
+    .desc{margin-top:12px;font-size:12.5px}
+    .chips{margin-top:12px;gap:8px}
+    .chip{padding:7px 11px;font-size:12.5px;gap:7px}
+    .chip b{font-size:9.5px}
+    .timer-row{margin-top:16px;gap:10px}
+    .timer-label,.next .lbl{font-size:11px}
+    .next{text-align:left;min-width:0}
+    ul.schedule li{
+      display:grid;
+      grid-template-columns:auto 20px 1fr auto;
+      grid-template-areas:"t ico m tag" "t ico mp mp";
+      column-gap:10px;row-gap:3px;align-items:center;
+      padding:10px 12px;font-size:13.5px;
+    }
+    ul.schedule .t{grid-area:t;min-width:0;white-space:nowrap;font-size:12px}
+    ul.schedule .te{display:none}
+    ul.schedule .ico{grid-area:ico}
+    ul.schedule .m{grid-area:m;min-width:0}
+    ul.schedule .m small{display:none}
+    ul.schedule .mp{
+      grid-area:mp;max-width:100%;margin:0;font-size:11.5px;
+      white-space:normal;overflow:visible;text-overflow:clip;
+    }
+    ul.schedule .tag{grid-area:tag;margin:0}
+    .credit{font-size:11px;letter-spacing:.12em}
+  }
+  @media (max-width:370px){
+    ul.schedule li{grid-template-columns:auto 1fr auto;grid-template-areas:"t m tag" "t mp mp"}
+    ul.schedule .ico{display:none}
+    .names .en{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .chip b{display:block}
+    .chip{flex-direction:column;gap:2px}
   }
 </style>
 </head>
@@ -577,7 +625,7 @@ function renderSchedule(inicioActual) {
     const nomMapa = s ? s.nombre : '';
     filas.push(
       '<li class="' + (actual ? 'now' : '') + '" title="' + info.en + ' — ' + info.desc + (nomMapa ? ' — ' + nomMapa : '') + '">' +
-        '<span class="t">' + fmtHora(ini) + ' – ' + fmtHora(finf) + '</span>' +
+        '<span class="t">' + fmtHora(ini) + '<span class="te"> – ' + fmtHora(finf) + '</span></span>' +
         (info.icon ? '<span class="ico" style="--c:' + info.color + ';--i:url(' + info.icon + ')"></span>' : '') +
         '<span class="m">' + info.es + '<small>' + info.en + '</small></span>' +
         (nomMapa ? '<span class="mp">' + nomMapa + '</span>' : '') +
