@@ -54,7 +54,14 @@ El fondo de **Air Superiority** no existe como asset oficial: se generó a parti
 triangular oficial de Team Deathmatch con un giro de tono, para mantener el estilo del juego.
 
 Los **minimapas** (`map-*.jpg`) se extrajeron de los bundles del juego
-(`maps/map-*/map-*-minimap`) y se usan como fondo de cada franja en la lista.
+(`maps/map-*/map-*-minimap`) y aparecen como miniatura en la tarjeta y como
+respaldo de fondo de franja.
+
+Los **fondos cinematográficos** (`wall-*.jpg`) son las pantallas de carga oficiales de
+cada mapa, publicadas en la Official Metalstorm Wiki bajo licencia
+**CC BY-SA 4.0** (atribución: Official Metalstorm Wiki / wiki.gg). Se usan como fondo
+de cada franja de la lista.
+
 El mapa "Volcano" del calendario corresponde al asset "Crucible" (cráter volcánico).
 
 El **wordmark METALSTORM** (encabezado), el **emblema del rayo** (favicon) y el
@@ -217,6 +224,12 @@ Metal/
     ├── map-seastacks.jpg
     ├── map-stoneforest.jpg
     ├── map-volcano.jpg # corresponde al asset "Crucible" (cráter volcánico)
+    ├── wall-arctic.jpg   # pantallas de carga de cada mapa (fondo de cada franja)
+    ├── wall-canyon.jpg
+    ├── wall-countdown.jpg
+    ├── wall-seastacks.jpg
+    ├── wall-stoneforest.jpg
+    └── wall-volcano.jpg
     ├── logo-metalstorm.png  # wordmark oficial del juego (encabezado)
     ├── logo-starform.png    # logo del estudio (pie de página)
     └── favicon.png          # emblema del rayo (pestaña del navegador)

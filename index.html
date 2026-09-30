@@ -132,12 +132,19 @@
   .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
   .chips[hidden]{display:none}
   .chip{
-    display:flex;align-items:baseline;gap:9px;
+    display:flex;align-items:center;gap:9px;
     padding:8px 13px;border-radius:11px;
     background:rgba(255,255,255,.055);
     border:1px solid rgba(255,255,255,.11);
     font-size:13.5px;font-weight:600;
     backdrop-filter:blur(2px);
+  }
+  .mapthumb{
+    width:26px;height:26px;border-radius:8px;flex:0 0 auto;
+    background-position:center;background-size:cover;background-repeat:no-repeat;
+    background-color:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.2);
+    box-shadow:0 2px 8px rgba(0,0,0,.4);
   }
   .chip b{
     font-size:10px;letter-spacing:.15em;text-transform:uppercase;
@@ -180,7 +187,7 @@
   ul.schedule .mapbg{
     position:absolute;inset:0;z-index:0;pointer-events:none;
     background-position:center;background-size:cover;background-repeat:no-repeat;
-    background-image:linear-gradient(90deg, rgba(15,22,31,.97) 18%, rgba(15,22,31,.66) 58%, rgba(15,22,31,.38)), var(--mbg);
+    background-image:linear-gradient(90deg, rgba(15,22,31,.985) 18%, rgba(15,22,31,.80) 55%, rgba(15,22,31,.45)), var(--mbg);
   }
   ul.schedule li > :not(.mapbg){position:relative;z-index:1}
   @media (hover:hover){
@@ -300,8 +307,8 @@
       <div class="desc" id="modeDesc">—</div>
 
       <div class="chips" id="chips" hidden>
-        <span class="chip"><b>Mapa actual</b><span id="mapNow">—</span></span>
-        <span class="chip next"><b>Próximo mapa</b><span id="mapNext">—</span></span>
+        <span class="chip"><b>Mapa actual</b><span class="mapthumb" id="mapThumbNow"></span><span id="mapNow">—</span></span>
+        <span class="chip next"><b>Próximo mapa</b><span class="mapthumb" id="mapThumbNext"></span><span id="mapNext">—</span></span>
       </div>
 
       <div class="timer-row">
@@ -389,12 +396,12 @@ const MODES = {
    MAPAS — nombres oficiales en español (loc-es-ES.config)
    ============================================================ */
 const MAPAS = {
-  Arctic:      { base:'Rumbo al hielo',    day:'Rumbo al hielo',    night:'Noche rumbo al hielo',        snow:'Nieve rumbo al hielo',     mini:'assets/map-arctic.jpg' },
-  Canyon:      { base:'Cañón carmesí',     day:'Cañón carmesí',     night:'Noche de cañón carmesí',      sunrise:'Sonrisa cañón carmesí',  mini:'assets/map-canyon.jpg' },
-  Seastacks:   { base:'Tormenta desatada', day:'Tormenta desatada', night:'Noche de tormenta desatada',                                      mini:'assets/map-seastacks.jpg' },
-  Stoneforest: { base:'Bosque de Piedra',  day:'Bosque de Piedra',  night:'Noche del Bosque de Piedra',                                      mini:'assets/map-stoneforest.jpg' },
-  Volcano:     { base:'Crisol',            day:'Crisol',            night:'Noche de crisol',                                                   mini:'assets/map-volcano.jpg' },
-  Countdown:   { base:'Cuenta atrás',      day:'Cuenta atrás',      night:'Noche de cuenta atrás',                                           mini:'assets/map-countdown.jpg' },
+  Arctic:      { base:'Rumbo al hielo',    day:'Rumbo al hielo',    night:'Noche rumbo al hielo',        snow:'Nieve rumbo al hielo',     mini:'assets/map-arctic.jpg',     wall:'assets/wall-arctic.jpg' },
+  Canyon:      { base:'Cañón carmesí',     day:'Cañón carmesí',     night:'Noche de cañón carmesí',      sunrise:'Sonrisa cañón carmesí',  mini:'assets/map-canyon.jpg',     wall:'assets/wall-canyon.jpg' },
+  Seastacks:   { base:'Tormenta desatada', day:'Tormenta desatada', night:'Noche de tormenta desatada',                                      mini:'assets/map-seastacks.jpg',  wall:'assets/wall-seastacks.jpg' },
+  Stoneforest: { base:'Bosque de Piedra',  day:'Bosque de Piedra',  night:'Noche del Bosque de Piedra',                                      mini:'assets/map-stoneforest.jpg',wall:'assets/wall-stoneforest.jpg' },
+  Volcano:     { base:'Crisol',            day:'Crisol',            night:'Noche de crisol',                                                   mini:'assets/map-volcano.jpg',    wall:'assets/wall-volcano.jpg' },
+  Countdown:   { base:'Cuenta atrás',      day:'Cuenta atrás',      night:'Noche de cuenta atrás',                                           mini:'assets/map-countdown.jpg', wall:'assets/wall-countdown.jpg' },
   Enclave:     { base:'Enclave',           day:'Enclave' }
 };
 
@@ -529,7 +536,8 @@ const els = {
   clockUtc:$('clockUtc'), clockLocal:$('clockLocal'), schedule:$('schedule'),
   bgA:$('bgA'), bgB:$('bgB'),
   evBanner:$('eventBanner'), evText:$('eventText'),
-  chips:$('chips'), mapNow:$('mapNow'), mapNext:$('mapNext')
+  chips:$('chips'), mapNow:$('mapNow'), mapNext:$('mapNext'),
+  mapThumbNow:$('mapThumbNow'), mapThumbNext:$('mapThumbNext')
 };
 
 let ultimoSlot = 0;
@@ -551,6 +559,14 @@ function setFondo(url) {
   layer.classList.add('show');
   layers[frontLayer].classList.remove('show');
   frontLayer = next;
+}
+
+function setMini(el, s) {
+  const m = (s && MAPAS[s.mapa] && MAPAS[s.mapa].mini) || '';
+  if (el.dataset.mini === m) return;
+  el.dataset.mini = m;
+  el.style.backgroundImage = m ? 'url("' + m + '")' : 'none';
+  el.style.display = m ? '' : 'none';
 }
 
 function render() {
@@ -602,6 +618,8 @@ function render() {
     els.chips.hidden = false;
     set('mapNow', els.mapNow, sNow.nombre);
     set('mapNext', els.mapNext, sNext ? sNext.nombre : '—');
+    setMini(els.mapThumbNow, sNow);
+    setMini(els.mapThumbNext, sNext);
   } else {
     els.chips.hidden = true;
   }
@@ -638,10 +656,11 @@ function renderSchedule(inicioActual) {
     const actual = i === 0;
     const s = slotDe(ini);
     const nomMapa = s ? s.nombre : '';
-    const mini = (s && MAPAS[s.mapa] && MAPAS[s.mapa].mini) ? MAPAS[s.mapa].mini : '';
+    const M = (s && MAPAS[s.mapa]) ? MAPAS[s.mapa] : null;
+    const bgUrl = (M && (M.wall || M.mini)) || '';
     filas.push(
       '<li class="' + (actual ? 'now' : '') + '" title="' + info.en + ' — ' + info.desc + (nomMapa ? ' — ' + nomMapa : '') + '">' +
-        (mini ? '<span class="mapbg" style="--mbg:url(' + mini + ')"></span>' : '') +
+        (bgUrl ? '<span class="mapbg" style="--mbg:url(' + bgUrl + ')"></span>' : '') +
         '<span class="t">' + fmtHora(ini) + '<span class="te"> – ' + fmtHora(finf) + '</span></span>' +
         (info.icon ? '<span class="ico" style="--c:' + info.color + ';--i:url(' + info.icon + ')"></span>' : '') +
         '<span class="m">' + info.es + '<small>' + info.en + '</small></span>' +
@@ -656,6 +675,7 @@ function renderSchedule(inicioActual) {
 // precarga de fondos para que el cambio de modo sea instantáneo
 ['bg-tdm','bg-as','bg-pt','bg-ctf','bg-vip'].forEach(n => { const i = new Image(); i.src = 'assets/' + n + '.png'; });
 ['arctic','countdown','canyon','volcano','seastacks','stoneforest'].forEach(n => { const i = new Image(); i.src = 'assets/map-' + n + '.jpg'; });
+['arctic','canyon','countdown','seastacks','stoneforest','volcano'].forEach(n => { const i = new Image(); i.src = 'assets/wall-' + n + '.jpg'; });
 
 render();
 setInterval(render, 250);
