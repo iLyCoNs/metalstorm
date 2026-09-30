@@ -140,11 +140,11 @@
     backdrop-filter:blur(2px);
   }
   .mapthumb{
-    width:26px;height:26px;border-radius:8px;flex:0 0 auto;
+    width:56px;height:32px;border-radius:9px;flex:0 0 auto;
     background-position:center;background-size:cover;background-repeat:no-repeat;
     background-color:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.2);
-    box-shadow:0 2px 8px rgba(0,0,0,.4);
+    border:1px solid rgba(255,255,255,.22);
+    box-shadow:0 2px 8px rgba(0,0,0,.45);
   }
   .chip b{
     font-size:10px;letter-spacing:.15em;text-transform:uppercase;
@@ -397,12 +397,12 @@ const MODES = {
    MAPAS — nombres oficiales en español (loc-es-ES.config)
    ============================================================ */
 const MAPAS = {
-  Arctic:      { base:'Rumbo al hielo',    day:'Rumbo al hielo',    night:'Noche rumbo al hielo',        snow:'Nieve rumbo al hielo',     mini:'assets/map-arctic.jpg',     wall:'assets/wall-arctic.jpg' },
-  Canyon:      { base:'Cañón carmesí',     day:'Cañón carmesí',     night:'Noche de cañón carmesí',      sunrise:'Sonrisa cañón carmesí',  mini:'assets/map-canyon.jpg',     wall:'assets/wall-canyon.jpg' },
-  Seastacks:   { base:'Tormenta desatada', day:'Tormenta desatada', night:'Noche de tormenta desatada',                                      mini:'assets/map-seastacks.jpg',  wall:'assets/wall-seastacks.jpg' },
-  Stoneforest: { base:'Bosque de Piedra',  day:'Bosque de Piedra',  night:'Noche del Bosque de Piedra',                                      mini:'assets/map-stoneforest.jpg',wall:'assets/wall-stoneforest.jpg' },
-  Volcano:     { base:'Crisol',            day:'Crisol',            night:'Noche de crisol',                                                   mini:'assets/map-volcano.jpg',    wall:'assets/wall-volcano.jpg' },
-  Countdown:   { base:'Cuenta atrás',      day:'Cuenta atrás',      night:'Noche de cuenta atrás',                                           mini:'assets/map-countdown.jpg', wall:'assets/wall-countdown.jpg' },
+  Arctic:      { base:'Rumbo al hielo',    day:'Rumbo al hielo',    night:'Noche rumbo al hielo',        snow:'Nieve rumbo al hielo',        wall:'assets/wall-arctic.jpg' },
+  Canyon:      { base:'Cañón carmesí',     day:'Cañón carmesí',     night:'Noche de cañón carmesí',      sunrise:'Sonrisa cañón carmesí',     wall:'assets/wall-canyon.jpg' },
+  Seastacks:   { base:'Tormenta desatada', day:'Tormenta desatada', night:'Noche de tormenta desatada',                                      wall:'assets/wall-seastacks.jpg' },
+  Stoneforest: { base:'Bosque de Piedra',  day:'Bosque de Piedra',  night:'Noche del Bosque de Piedra',wall:'assets/wall-stoneforest.jpg' },
+  Volcano:     { base:'Crisol',            day:'Crisol',            night:'Noche de crisol',                                                     wall:'assets/wall-volcano.jpg' },
+  Countdown:   { base:'Cuenta atrás',      day:'Cuenta atrás',      night:'Noche de cuenta atrás',                                          wall:'assets/wall-countdown.jpg' },
   Enclave:     { base:'Enclave',           day:'Enclave' }
 };
 
@@ -562,10 +562,10 @@ function setFondo(url) {
   frontLayer = next;
 }
 
-function setMini(el, s) {
-  const m = (s && MAPAS[s.mapa] && MAPAS[s.mapa].mini) || '';
-  if (el.dataset.mini === m) return;
-  el.dataset.mini = m;
+function setThumb(el, s) {
+  const m = (s && MAPAS[s.mapa] && MAPAS[s.mapa].wall) || '';
+  if (el.dataset.thumb === m) return;
+  el.dataset.thumb = m;
   el.style.backgroundImage = m ? 'url("' + m + '")' : 'none';
   el.style.display = m ? '' : 'none';
 }
@@ -619,8 +619,8 @@ function render() {
     els.chips.hidden = false;
     set('mapNow', els.mapNow, sNow.nombre);
     set('mapNext', els.mapNext, sNext ? sNext.nombre : '—');
-    setMini(els.mapThumbNow, sNow);
-    setMini(els.mapThumbNext, sNext);
+    setThumb(els.mapThumbNow, sNow);
+    setThumb(els.mapThumbNext, sNext);
   } else {
     els.chips.hidden = true;
   }
@@ -658,7 +658,7 @@ function renderSchedule(inicioActual) {
     const s = slotDe(ini);
     const nomMapa = s ? s.nombre : '';
     const M = (s && MAPAS[s.mapa]) ? MAPAS[s.mapa] : null;
-    const bgUrl = (M && (M.wall || M.mini)) || '';
+    const bgUrl = (M && M.wall) || '';
     filas.push(
       '<li class="' + (actual ? 'now' : '') + '" title="' + info.en + ' — ' + info.desc + (nomMapa ? ' — ' + nomMapa : '') + '">' +
         (bgUrl ? '<span class="mapbg" style="--mbg:url(' + bgUrl + ')"></span>' : '') +
@@ -675,7 +675,6 @@ function renderSchedule(inicioActual) {
 
 // precarga de fondos para que el cambio de modo sea instantáneo
 ['bg-tdm','bg-as','bg-pt','bg-ctf','bg-vip'].forEach(n => { const i = new Image(); i.src = 'assets/' + n + '.png'; });
-['arctic','countdown','canyon','volcano','seastacks','stoneforest'].forEach(n => { const i = new Image(); i.src = 'assets/map-' + n + '.jpg'; });
 ['arctic','canyon','countdown','seastacks','stoneforest','volcano'].forEach(n => { const i = new Image(); i.src = 'assets/wall-' + n + '.jpg'; });
 
 render();
