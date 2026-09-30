@@ -53,6 +53,14 @@ Los íconos y fondos de modos se extrajeron de la instalación del propio juego
 El fondo de **Air Superiority** no existe como asset oficial: se generó a partir del patrón
 triangular oficial de Team Deathmatch con un giro de tono, para mantener el estilo del juego.
 
+Los **minimapas** (`map-*.jpg`) se extrajeron de los bundles del juego
+(`maps/map-*/map-*-minimap`) y se usan como fondo de cada franja en la lista.
+El mapa "Volcano" del calendario corresponde al asset "Crucible" (cráter volcánico).
+
+El **wordmark METALSTORM** (encabezado), el **emblema del rayo** (favicon) y el
+**logo de Starform** (pie de página) también vienen de los archivos del juego
+(`splash-text`, `prompt-to-rate ms_logo` y `starform-logo`).
+
 Todas las imágenes son propiedad de **Starform**; este proyecto no está afiliado y no debe
 usarse comercialmente.
 
@@ -202,7 +210,16 @@ Metal/
     ├── bg-as.png       # (generado, ver sección Imágenes)
     ├── bg-pt.png
     ├── bg-ctf.png
-    └── bg-vip.png
+    ├── bg-vip.png
+    ├── map-arctic.jpg  # minimapas reales del juego (uno por mapa)
+    ├── map-canyon.jpg
+    ├── map-countdown.jpg
+    ├── map-seastacks.jpg
+    ├── map-stoneforest.jpg
+    ├── map-volcano.jpg # corresponde al asset "Crucible" (cráter volcánico)
+    ├── logo-metalstorm.png  # wordmark oficial del juego (encabezado)
+    ├── logo-starform.png    # logo del estudio (pie de página)
+    └── favicon.png          # emblema del rayo (pestaña del navegador)
 ```
 
 ## Aviso
