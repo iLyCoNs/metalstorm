@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metalstorm — Rotación de modos en vivo</title>
+<meta name="description" content="Rotación en vivo de los modos de Metalstorm (Team Deathmatch, Air Superiority, Priority Target y más) con temporizador a la próxima rotación.">
+<meta name="theme-color" content="#0b1016">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b1016'/%3E%3Cpath d='M14 40l18-20 18 20-18-8z' fill='%234fc3f7'/%3E%3C/svg%3E">
+<link rel="preload" as="image" href="assets/bg-tdm.png">
+<link rel="preload" as="image" href="assets/bg-as.png">
+<link rel="preload" as="image" href="assets/bg-pt.png">
+<link rel="preload" as="image" href="assets/bg-ctf.png">
+<style>
+  :root{
+    --bg:#0b1016;
+    --bg2:#111a24;
+    --card:#141e29;
+    --line:#22303f;
+    --text:#e8f1f8;
+    --muted:#8fa3b3;
+    --accent:#4fc3f7;
+    --mono:'Consolas','SF Mono','JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(79,195,247,.12), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(255,90,90,.10), transparent 60%),
+      linear-gradient(180deg,var(--bg),var(--bg2));
+    color:var(--text);
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;
+    display:flex;justify-content:center;
+    padding:32px 16px 48px;
+  }
+  main{width:100%;max-width:760px}
+  header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+  h1{font-size:15px;letter-spacing:.22em;text-transform:uppercase;margin:0;color:var(--muted);font-weight:600}
+  h1 b{color:var(--text)}
+  .clocks{font-family:var(--mono);font-size:12px;color:var(--muted);text-align:right;line-height:1.6}
+  .clocks span{color:var(--text)}
+
+  /* ---------- Tarjeta del modo actual ---------- */
+  .card{
+    position:relative;overflow:hidden;
+    background:linear-gradient(145deg,var(--card),#101822);
+    border:1px solid var(--line);
+    border-left:6px solid var(--accent);
+    border-radius:16px;
+    padding:22px 22px 18px;
+    box-shadow:0 18px 50px rgba(0,0,0,.35);
+    transition:border-color .5s ease;
+    --accent:#4fc3f7;
+  }
+  .card-bg{
+    position:absolute;inset:0;z-index:0;
+    background-position:center;background-size:cover;background-repeat:no-repeat;
+    opacity:0;transition:opacity .7s ease;
+  }
+  .card-bg.show{opacity:.75}
+  .card::before{
+    content:'';position:absolute;inset:0;z-index:1;
+    background:linear-gradient(90deg, rgba(9,13,19,.95) 0%, rgba(9,13,19,.82) 45%, rgba(9,13,19,.30) 100%);
+  }
+  .card-inner{position:relative;z-index:2}
+  .card.pulse{animation:pulse .9s ease}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent), 0 18px 50px rgba(0,0,0,.35)}
+    100%{box-shadow:0 0 0 26px transparent, 0 18px 50px rgba(0,0,0,.35)}
+  }
+
+  .top{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .mode-icon-wrap{
+    width:62px;height:62px;border-radius:15px;flex:0 0 auto;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.14);
+    display:grid;place-items:center;
+    box-shadow:0 10px 26px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .mode-icon{
+    width:38px;height:38px;display:block;
+    background:var(--accent);
+    -webkit-mask-position:center;-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;
+    mask-position:center;mask-size:contain;mask-repeat:no-repeat;
+    filter:drop-shadow(0 0 10px color-mix(in srgb, var(--accent) 70%, transparent));
+    transition:background-color .5s ease;
+  }
+  .names{min-width:0}
+  .names .es{font-size:24px;font-weight:700;line-height:1.15}
+  .names .en{font-size:13px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+  .badge{
+    margin-left:auto;
+    font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.08em;
+    color:#08111a;background:var(--accent);
+    border-radius:9px;padding:8px 11px;
+    box-shadow:0 0 20px color-mix(in srgb, var(--accent) 55%, transparent);
+    transition:background-color .5s ease;
+  }
+  .desc{margin-top:14px;font-size:13.5px;color:#c3d2de;opacity:.92}
+
+  .timer-row{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-top:18px;flex-wrap:wrap}
+  .timer-label{font-size:12px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
+  .timer{font-family:var(--mono);font-size:44px;font-weight:700;line-height:1;letter-spacing:.04em;
+         text-shadow:0 0 26px color-mix(in srgb, var(--accent) 45%, transparent)}
+  .next{text-align:right}
+  .next .lbl{font-size:12px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
+  .next .val{font-size:15px;font-weight:600}
+  .next .val small{display:block;color:var(--muted);font-weight:400;font-size:12px;margin-top:2px}
+
+  .bar{margin-top:18px;height:7px;border-radius:99px;background:#0a121b;overflow:hidden;border:1px solid var(--line)}
+  .bar i{position:relative;display:block;height:100%;width:0%;background:var(--accent);overflow:hidden;
+         transition:width .25s linear, background-color .5s ease}
+  .bar i::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);
+    animation:shine 2.6s linear infinite;
+  }
+  @keyframes shine{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+  .slot-range{margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
+
+  /* ---------- Lista de franjas ---------- */
+  h2{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:30px 0 12px;font-weight:600}
+  ul.schedule{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:rgba(20,30,41,.55)}
+  ul.schedule li{
+    display:flex;align-items:center;gap:14px;
+    padding:11px 16px;border-bottom:1px solid var(--line);
+    font-size:14px;
+    transition:background .18s ease, transform .18s ease;
+  }
+  ul.schedule li:last-child{border-bottom:0}
+  ul.schedule li:hover{background:rgba(255,255,255,.045);transform:translateX(2px)}
+  ul.schedule li.now{background:color-mix(in srgb, var(--accent) 10%, transparent)}
+  ul.schedule .t{font-family:var(--mono);font-size:12.5px;color:var(--muted);min-width:112px}
+  ul.schedule .ico{
+    width:20px;height:20px;flex:0 0 auto;
+    background:var(--c,#4fc3f7);
+    -webkit-mask:var(--i) center/contain no-repeat;
+    mask:var(--i) center/contain no-repeat;
+    filter:drop-shadow(0 0 6px color-mix(in srgb, var(--c,#4fc3f7) 60%, transparent));
+  }
+  ul.schedule .m{font-weight:600;min-width:0}
+  ul.schedule .m small{color:var(--muted);font-weight:400;margin-left:8px;font-size:12px}
+  ul.schedule .tag{margin-left:auto;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#08111a;background:var(--c,#4fc3f7);border-radius:6px;padding:3px 8px;font-weight:700}
+
+  footer{margin-top:26px;font-size:12px;color:var(--muted);line-height:1.7}
+  footer a{color:var(--accent);text-decoration:none}
+  .credit{
+    margin-top:18px;padding-top:16px;
+    border-top:1px solid var(--line);
+    text-align:center;
+    font-size:12.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--text);
+    text-shadow:0 0 18px rgba(79,195,247,.35);
+  }
+  .note{border:1px dashed var(--line);border-radius:12px;padding:12px 14px;margin-top:18px;font-size:12.5px;color:var(--muted);line-height:1.65}
+  .note b{color:var(--text)}
+  @media (max-width:560px){
+    .timer{font-size:36px}
+    .next{text-align:left}
+    ul.schedule .t{min-width:92px}
+    .names .es{font-size:20px}
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1><b>Metalstorm</b> · rotación de modos en vivo</h1>
+    <div class="clocks">
+      UTC <span id="clockUtc">--:--:--</span><br>
+      Local <span id="clockLocal">--:--:--</span>
+    </div>
+  </header>
+
+  <section class="card" id="card">
+    <div class="card-bg" id="bgA"></div>
+    <div class="card-bg" id="bgB"></div>
+    <div class="card-inner">
+      <div class="top">
+        <div class="mode-icon-wrap"><i class="mode-icon" id="modeIcon"></i></div>
+        <div class="names">
+          <div class="es" id="modeEs">Combate a Muerte por Equipos</div>
+          <div class="en" id="modeEn">Team Deathmatch</div>
+        </div>
+        <div class="badge" id="badge">TDM</div>
+      </div>
+
+      <div class="desc" id="modeDesc">—</div>
+
+      <div class="timer-row">
+        <div>
+          <div class="timer-label">Cambia en</div>
+          <div class="timer" id="timer">--:--</div>
+        </div>
+        <div class="next">
+          <div class="lbl">Siguiente modo</div>
+          <div class="val"><span id="nextMode">—</span><small id="nextTime">—</small></div>
+        </div>
+      </div>
+
+      <div class="bar"><i id="bar"></i></div>
+      <div class="slot-range">
+        <span id="slotStart">--:--</span>
+        <span id="slotEnd">--:--</span>
+      </div>
+    </div>
+  </section>
+
+  <h2>Próximas franjas</h2>
+  <ul class="schedule" id="schedule"></ul>
+
+  <div class="note">
+    <b>Nota:</b> la rotación cambia cada 30 minutos (reloj UTC). En periodos de eventos o modos
+    limitados (p. ej. Captura la Bandera), el juego puede reemplazar franjas de la tabla; verifica
+    en el juego si algo no coincide. Puedes fijar excepciones en <b>OVERRIDES</b> dentro del HTML.
+  </div>
+
+  <footer>
+    Proyecto de fans, sin afiliación con Starform. Rotación base verificada en vivo contra el juego
+    (23:00 UTC → TDM, 23:30 UTC → Priority Target, 00:00 UTC → TDM).<br>
+    Imágenes de modos: propiedad de Starform, extraídas de la instalación del juego para uso informativo de fans.<br>
+    Horarios mostrados en tu hora local según tu navegador.
+    <div class="credit">BY DEUS VULT "LYCONS" - [FACH] BRIGADAS AEREAS - CHILE.</div>
+  </footer>
+</main>
+
+<script>
+/* ============================================================
+   ROTACIÓN DE METALSTORM (cada 30 min, en UTC)
+   ------------------------------------------------------------
+   :00  -> Team Deathmatch (TDM)
+   :30  -> Air Superiority (AS) si la hora UTC es PAR
+           Priority Target (PT) si la hora UTC es IMPAR
+   Ej.: 23:00 TDM · 23:30 PT · 00:00 TDM · 00:30 AS
+   ============================================================ */
+
+const MODES = {
+  tdm: {
+    es:'Combate a Muerte por Equipos', en:'Team Deathmatch', tag:'TDM', color:'#4a9be0',
+    icon:'assets/icon-tdm.png', bg:'assets/bg-tdm.png',
+    desc:'20 derribos o más kills en 5:30 min. Cada caída cuenta como kill.'
+  },
+  as: {
+    es:'Superioridad Aérea', en:'Air Superiority', tag:'AS', color:'#2fbcd6',
+    icon:'assets/icon-as.png', bg:'assets/bg-as.png',
+    desc:'Captura los 3 puntos de control y mantenlos para ganar. El primero en llegar a 200.'
+  },
+  pt: {
+    es:'Objetivo Prioritario', en:'Priority Target', tag:'PT', color:'#a06ad9',
+    icon:'assets/icon-pt.png', bg:'assets/bg-pt.png',
+    desc:'Toma el objetivo central y sobrevive el mayor tiempo posible para sumar puntos.'
+  },
+  ctf: {
+    es:'Captura la Bandera', en:'Capture the Flag', tag:'CTF', color:'#e0b41f',
+    icon:'assets/icon-ctf.png', bg:'assets/bg-ctf.png',
+    desc:'Roba la bandera enemiga y tráela a tu base sin que te derriben.'
+  },
+  vip: {
+    es:'Combate a Muerte VIP', en:'VIP Deathmatch', tag:'VIP', color:'#37cc8f',
+    icon:'assets/icon-vip.png', bg:'assets/bg-vip.png',
+    desc:'Protege a tu VIP y derriba al objetivo enemigo: los VIP valen más puntos.'
+  },
+  elim: {
+    es:'Eliminación', en:'Elimination', tag:'ELIM', color:'#9aa5b5',
+    icon:'assets/icon-elim.png', bg:null,
+    desc:'Sin reapariciones. Gana 2 de 3 rondas o cruza primero el anillo final.'
+  }
+};
+
+/* Excepciones para eventos / LTM. Cada regla:
+   { desde:'2026-10-01T00:00:00Z', hasta:'2026-10-08T00:00:00Z', modo:'ctf' } */
+const OVERRIDES = [];
+
+const SLOT_MS = 30 * 60 * 1000;
+
+function modoPara(fecha) {
+  const t = fecha.getTime();
+  for (const r of OVERRIDES) {
+    if (t >= Date.parse(r.desde) && t < Date.parse(r.hasta)) return r.modo;
+  }
+  const h = fecha.getUTCHours();
+  const m = fecha.getUTCMinutes();
+  if (m < 30) return 'tdm';
+  return (h % 2 === 0) ? 'as' : 'pt';
+}
+
+function inicioFranja(fecha) {
+  const d = new Date(fecha);
+  d.setUTCMinutes(d.getUTCMinutes() >= 30 ? 30 : 0, 0, 0);
+  return d;
+}
+
+const pad = n => String(n).padStart(2, '0');
+const fmtHora = d => d.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+const fmtHoraSeg = (d, tz) => d.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', second:'2-digit', ...(tz ? { timeZone: tz } : {}) });
+
+function mmss(ms) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  return pad(Math.floor(s / 60)) + ':' + pad(s % 60);
+}
+
+const $ = id => document.getElementById(id);
+const els = {
+  card:$('card'), badge:$('badge'), modeIcon:$('modeIcon'),
+  modeEs:$('modeEs'), modeEn:$('modeEn'), modeDesc:$('modeDesc'),
+  timer:$('timer'), nextMode:$('nextMode'), nextTime:$('nextTime'),
+  bar:$('bar'), slotStart:$('slotStart'), slotEnd:$('slotEnd'),
+  clockUtc:$('clockUtc'), clockLocal:$('clockLocal'), schedule:$('schedule'),
+  bgA:$('bgA'), bgB:$('bgB')
+};
+
+let ultimoSlot = 0;
+let modoActual = null;
+let frontLayer = 0;
+const cache = {};
+
+function set(id, el, texto) {
+  if (cache[id] !== texto) { cache[id] = texto; el.textContent = texto; }
+}
+
+function setFondo(url) {
+  const layers = [els.bgA, els.bgB];
+  if (layers[frontLayer].dataset.url === (url || '')) return;
+  const next = 1 - frontLayer;
+  const layer = layers[next];
+  layer.style.backgroundImage = url ? 'url("' + url + '")' : 'none';
+  layer.dataset.url = url || '';
+  layer.classList.add('show');
+  layers[frontLayer].classList.remove('show');
+  frontLayer = next;
+}
+
+function render() {
+  const ahora = new Date();
+  const inicio = inicioFranja(ahora);
+  const fin = new Date(inicio.getTime() + SLOT_MS);
+  const modo = modoPara(inicio);
+  const info = MODES[modo] || MODES.tdm;
+  const restante = fin.getTime() - ahora.getTime();
+  const pct = Math.min(100, Math.max(0, (ahora - inicio) / SLOT_MS * 100));
+
+  if (modoActual !== modo) {
+    modoActual = modo;
+    els.card.style.setProperty('--accent', info.color);
+    els.card.style.borderLeftColor = info.color;
+    els.badge.style.background = info.color;
+    els.modeIcon.style.background = info.color;
+    ['webkitMaskImage','maskImage'].forEach(prop => { els.modeIcon.style[prop] = 'url("' + info.icon + '")'; });
+    setFondo(info.bg);
+    els.card.classList.remove('pulse');
+    void els.card.offsetWidth;
+    els.card.classList.add('pulse');
+  }
+
+  set('badge',  els.badge,  info.tag);
+  set('modeEs', els.modeEs, info.es);
+  set('modeEn', els.modeEn, info.en);
+  set('desc',   els.modeDesc, info.desc);
+  set('timer',  els.timer,  mmss(restante));
+  set('start',  els.slotStart, fmtHora(inicio));
+  set('end',    els.slotEnd,   fmtHora(fin));
+
+  els.bar.style.background = info.color;
+  els.bar.style.width = pct.toFixed(2) + '%';
+
+  const modoSig = modoPara(fin);
+  const sig = MODES[modoSig] || MODES.tdm;
+  set('nextMode', els.nextMode, sig.es);
+  set('nextTime', els.nextTime, fmtHora(fin) + ' (' + sig.en + ')');
+
+  set('utc',   els.clockUtc,   fmtHoraSeg(ahora, 'UTC'));
+  set('local', els.clockLocal, fmtHoraSeg(ahora));
+
+  if (inicio.getTime() !== ultimoSlot) {
+    ultimoSlot = inicio.getTime();
+    renderSchedule(inicio);
+  }
+
+  document.title = info.tag + ' · ' + mmss(restante) + ' — Metalstorm';
+}
+
+function renderSchedule(inicioActual) {
+  const filas = [];
+  for (let i = 0; i < 8; i++) {
+    const ini = new Date(inicioActual.getTime() + i * SLOT_MS);
+    const finf = new Date(ini.getTime() + SLOT_MS);
+    const modo = modoPara(ini);
+    const info = MODES[modo] || MODES.tdm;
+    const actual = i === 0;
+    filas.push(
+      '<li class="' + (actual ? 'now' : '') + '" title="' + info.en + ' — ' + info.desc + '">' +
+        '<span class="t">' + fmtHora(ini) + ' – ' + fmtHora(finf) + '</span>' +
+        '<span class="ico" style="--c:' + info.color + ';--i:url(' + info.icon + ')"></span>' +
+        '<span class="m">' + info.es + '<small>' + info.en + '</small></span>' +
+        (actual ? '<span class="tag" style="--c:' + info.color + '">Ahora</span>' : '') +
+      '</li>'
+    );
+  }
+  els.schedule.innerHTML = filas.join('');
+}
+
+// precarga de fondos para que el cambio de modo sea instantáneo
+['bg-tdm','bg-as','bg-pt','bg-ctf','bg-vip'].forEach(n => { const i = new Image(); i.src = 'assets/' + n + '.png'; });
+
+render();
+setInterval(render, 250);
+</script>
+</body>
+</html>
