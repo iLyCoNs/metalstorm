@@ -362,22 +362,22 @@
 
 const MODES = {
   tdm: {
-    es:'Combate a muerte por equipos', en:'Team Deathmatch', tag:'TDM', color:'#4a9be0',
+    es:'Combate a muerte por equipos', en:'Team Deathmatch', tag:'CME', color:'#4a9be0',
     icon:'assets/icon-tdm.png', bg:'assets/bg-tdm.png',
     desc:'20 derribos o más kills en 5:30 min. Cada caída cuenta como kill.'
   },
   as: {
-    es:'Superioridad aérea', en:'Air Superiority', tag:'AS', color:'#2fbcd6',
+    es:'Superioridad aérea', en:'Air Superiority', tag:'SA', color:'#2fbcd6',
     icon:'assets/icon-as.png', bg:'assets/bg-as.png',
     desc:'Captura los 3 puntos de control y mantenlos para ganar. El primero en llegar a 200.'
   },
   pt: {
-    es:'Objetivo prioritario', en:'Priority Target', tag:'PT', color:'#a06ad9',
+    es:'Objetivo prioritario', en:'Priority Target', tag:'OP', color:'#a06ad9',
     icon:'assets/icon-pt.png', bg:'assets/bg-pt.png',
     desc:'Toma el objetivo central y sobrevive el mayor tiempo posible para sumar puntos.'
   },
   ctf: {
-    es:'Captura la bandera', en:'Capture the Flag', tag:'CTF', color:'#e0b41f',
+    es:'Captura la bandera', en:'Capture the Flag', tag:'CB', color:'#e0b41f',
     icon:'assets/icon-ctf.png', bg:'assets/bg-ctf.png',
     desc:'Roba la bandera enemiga y tráela a tu base sin que te derriben.'
   },
@@ -562,6 +562,30 @@ function setFondo(url) {
   frontLayer = next;
 }
 
+/* Favicon dinámico de la pestaña: siglas del modo con su color.
+   Así la pestaña se reconoce de un vistazo sin abrirla. */
+const favLink = document.querySelector('link[rel="icon"]');
+function setFavicon(tag, color) {
+  try {
+    const c = document.createElement('canvas');
+    c.width = c.height = 64;
+    const x = c.getContext('2d');
+    x.fillStyle = '#0b1016';
+    if (x.roundRect) { x.beginPath(); x.roundRect(0, 0, 64, 64, 14); x.fill(); }
+    else { x.fillRect(0, 0, 64, 64); }
+    x.strokeStyle = color || '#4a9be0';
+    x.lineWidth = 5;
+    if (x.roundRect) { x.beginPath(); x.roundRect(5, 5, 54, 54, 11); x.stroke(); }
+    else { x.strokeRect(5, 5, 54, 54); }
+    x.fillStyle = '#ffffff';
+    x.font = 'bold ' + (String(tag).length > 3 ? 17 : 22) + 'px sans-serif';
+    x.textAlign = 'center';
+    x.textBaseline = 'middle';
+    x.fillText(String(tag).slice(0, 4), 32, 34);
+    if (favLink) favLink.href = c.toDataURL('image/png');
+  } catch (e) {}
+}
+
 function setThumb(el, s) {
   const m = (s && MAPAS[s.mapa] && MAPAS[s.mapa].wall) || '';
   if (el.dataset.thumb === m) return;
@@ -592,6 +616,7 @@ function render() {
       els.iconWrap.style.display = 'none';
     }
     setFondo(info.bg);
+    setFavicon(info.tag, info.color);
     els.card.classList.remove('pulse');
     void els.card.offsetWidth;
     els.card.classList.add('pulse');
