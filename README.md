@@ -203,6 +203,11 @@ Metal/
 ├── README.md
 ├── tools/
 │   └── actualizar-rotacion.py   # regenera rotacion.json tras un parche del juego
+└── bot-whatsapp/                # bot de WhatsApp para el escuadrón (ver su README)
+    ├── bot.js                   # publica la rotación en el grupo + comandos
+    ├── package.json             # dependencias (Baileys)
+    ├── config.ejemplo.json      # plantilla de configuración
+    └── README.md                # instalación y uso
 └── assets/
     ├── icon-192.png    # íconos de la app (pantalla de inicio / PWA)
     ├── icon-512.png

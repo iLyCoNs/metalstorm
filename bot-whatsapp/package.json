@@ -1,0 +1,12 @@
+{
+  "name": "metalstorm-squad-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bot de WhatsApp para el escuadrón: publica la rotación de modos/mapas de Metalstorm en el grupo y responde comandos. Usa rotacion.json + eventos.json del repo (sin conexión al juego).",
+  "main": "bot.js",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.0",
+    "qrcode-terminal": "^0.12.0"
+  }
+}
