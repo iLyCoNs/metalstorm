@@ -90,9 +90,19 @@
   .card-bg.show{opacity:.75}
   .card::before{
     content:'';position:absolute;inset:0;z-index:1;
-    background:linear-gradient(90deg, rgba(9,13,19,.95) 0%, rgba(9,13,19,.82) 45%, rgba(9,13,19,.30) 100%);
+    background:linear-gradient(90deg, rgba(9,13,19,.92) 0%, rgba(9,13,19,.76) 50%, rgba(9,13,19,.40) 100%);
   }
   .card-inner{position:relative;z-index:2}
+  /* Borde negro en las letras de la tarjeta para distinguirlas del fondo */
+  .card .names .es,
+  .card .chip{
+    text-shadow:
+      -1px -1px 0 rgba(0,0,0,.9),
+      1px -1px 0 rgba(0,0,0,.9),
+      -1px 1px 0 rgba(0,0,0,.9),
+      1px 1px 0 rgba(0,0,0,.9),
+      0 2px 8px rgba(0,0,0,.85);
+  }
   .card.pulse{animation:pulse .9s ease}
   @keyframes pulse{
     0%{box-shadow:0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent), 0 18px 50px rgba(0,0,0,.35)}
@@ -157,10 +167,45 @@
   .timer-row{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-top:18px;flex-wrap:wrap}
   .timer-label{font-size:12px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
   .timer{font-family:var(--mono);font-size:clamp(33px, 10vw, 44px);font-weight:700;line-height:1;letter-spacing:.04em;
-         text-shadow:0 0 26px color-mix(in srgb, var(--accent) 45%, transparent)}
+         text-shadow:
+           -1px -1px 0 rgba(0,0,0,.9),
+           1px -1px 0 rgba(0,0,0,.9),
+           -1px 1px 0 rgba(0,0,0,.9),
+           1px 1px 0 rgba(0,0,0,.9),
+           0 2px 10px rgba(0,0,0,.9),
+           0 0 26px color-mix(in srgb, var(--accent) 45%, transparent)}
   .next{text-align:right}
   .next .lbl{font-size:12px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
-  .next .val{font-size:15px;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+  .next .val{font-size:15px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;
+    animation:neonSoft 2.6s ease-in-out infinite}
+  /* Neón suave en próximo modo/mapa + borde del chip */
+  @keyframes neonSoft{
+    0%,100%{
+      text-shadow:
+        -1px -1px 0 rgba(0,0,0,.9),
+        1px -1px 0 rgba(0,0,0,.9),
+        -1px 1px 0 rgba(0,0,0,.9),
+        1px 1px 0 rgba(0,0,0,.9),
+        0 2px 8px rgba(0,0,0,.85),
+        0 0 5px color-mix(in srgb, var(--next, #fff) 35%, transparent);
+    }
+    50%{
+      text-shadow:
+        -1px -1px 0 rgba(0,0,0,.9),
+        1px -1px 0 rgba(0,0,0,.9),
+        -1px 1px 0 rgba(0,0,0,.9),
+        1px 1px 0 rgba(0,0,0,.9),
+        0 2px 8px rgba(0,0,0,.85),
+        0 0 16px color-mix(in srgb, var(--next, #fff) 80%, transparent),
+        0 0 34px color-mix(in srgb, var(--next, #fff) 40%, transparent);
+    }
+  }
+  .chip.next{animation:chipGlow 2.6s ease-in-out infinite, neonSoft 2.6s ease-in-out infinite}
+  @keyframes chipGlow{
+    0%,100%{box-shadow:0 2px 8px rgba(0,0,0,.4);border-color:rgba(255,255,255,.11)}
+    50%{box-shadow:0 0 18px color-mix(in srgb, var(--next, #fff) 55%, transparent);
+        border-color:color-mix(in srgb, var(--next, #fff) 65%, rgba(255,255,255,.11))}
+  }
   .next .val small{display:block;color:var(--muted);font-weight:400;font-size:12px;margin-top:2px}
 
   .bar{margin-top:18px;height:7px;border-radius:99px;background:#0a121b;overflow:hidden;border:1px solid var(--line)}
@@ -172,6 +217,9 @@
     animation:shine 2.6s linear infinite;
   }
   @keyframes shine{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+  @media (prefers-reduced-motion: reduce){
+    .next .val, .chip.next, .bar i::after, .event-banner .ev-dot, .card.pulse{animation:none}
+  }
   .slot-range{margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
 
   /* ---------- Lista de franjas ---------- */
@@ -527,6 +575,16 @@ function mmss(ms) {
   return pad(Math.floor(s / 60)) + ':' + pad(s % 60);
 }
 
+/* Amarillo -> rojo en los últimos 5 minutos del minutero */
+const AVISO_MS = 5 * 60 * 1000;
+function colorTemporizador(restante) {
+  if (restante > AVISO_MS) return '';
+  const r = Math.max(0, Math.min(1, restante / AVISO_MS));
+  const g = Math.round(59 + (213 - 59) * r);
+  const b = Math.round(48 + (79 - 48) * r);
+  return 'rgb(255,' + g + ',' + b + ')';
+}
+
 const $ = id => document.getElementById(id);
 const els = {
   card:$('card'), badge:$('badge'), modeIcon:$('modeIcon'),
@@ -543,6 +601,7 @@ const els = {
 
 let ultimoSlot = 0;
 let modoActual = null;
+let sigActual = null;
 let frontLayer = 0;
 const cache = {};
 
@@ -602,6 +661,8 @@ function render() {
   const info = MODES[modo] || MODES.tdm;
   const restante = fin.getTime() - ahora.getTime();
   const pct = Math.min(100, Math.max(0, (ahora - inicio) / SLOT_MS * 100));
+  const sNow = slotDe(ahora);
+  const sNext = slotDe(fin);
 
   if (modoActual !== modo) {
     modoActual = modo;
@@ -615,18 +676,21 @@ function render() {
     } else {
       els.iconWrap.style.display = 'none';
     }
-    setFondo(info.bg);
     setFavicon(info.tag, info.color);
     els.card.classList.remove('pulse');
     void els.card.offsetWidth;
     els.card.classList.add('pulse');
   }
 
+  /* Fondo de la tarjeta = mapa actual (con el fondo del modo como respaldo) */
+  setFondo((sNow && MAPAS[sNow.mapa] && MAPAS[sNow.mapa].wall) || info.bg);
+
   set('badge',  els.badge,  info.tag);
   set('modeEs', els.modeEs, info.es);
   set('modeEn', els.modeEn, info.en);
   set('desc',   els.modeDesc, info.desc);
   set('timer',  els.timer,  mmss(restante));
+  els.timer.style.color = colorTemporizador(restante);
   set('start',  els.slotStart, fmtHora(inicio));
   set('end',    els.slotEnd,   fmtHora(fin));
 
@@ -635,11 +699,10 @@ function render() {
 
   const modoSig = modoPara(fin);
   const sig = MODES[modoSig] || MODES.tdm;
+  if (sigActual !== modoSig) { sigActual = modoSig; els.card.style.setProperty('--next', sig.color); }
   set('nextMode', els.nextMode, sig.es);
   set('nextTime', els.nextTime, fmtHora(fin) + ' (' + sig.en + ')');
 
-  const sNow = slotDe(ahora);
-  const sNext = slotDe(fin);
   if (sNow) {
     els.chips.hidden = false;
     set('mapNow', els.mapNow, sNow.nombre);
