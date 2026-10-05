@@ -1,0 +1,18 @@
+{
+  "actualizado": "2026-09-30",
+  "escuadron": "Escuadrón Vengance",
+  "cupos": 30,
+  "jugadores": [
+    {
+      "callsign": "DEUS VULT",
+      "tag": "[FACH]",
+      "rol": "lider",
+      "lider": true,
+      "nivel": 156,
+      "avion": "MiG-29 Fulcrum",
+      "pais": "CL",
+      "estado": "activo",
+      "discord": "LyCoNs"
+    }
+  ]
+}

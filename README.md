@@ -203,11 +203,18 @@ Metal/
 ├── README.md
 ├── tools/
 │   └── actualizar-rotacion.py   # regenera rotacion.json tras un parche del juego
-└── bot-whatsapp/                # bot de WhatsApp para el escuadrón (ver su README)
-    ├── bot.js                   # publica la rotación en el grupo + comandos
-    ├── package.json             # dependencias (Baileys)
-    ├── config.ejemplo.json      # plantilla de configuración
-    └── README.md                # instalación y uso
+├── bot-whatsapp/                # bot de WhatsApp para el escuadrón (ver su README)
+│   ├── bot.js                   # publica la rotación en el grupo + comandos
+│   ├── package.json             # dependencias (Baileys)
+│   ├── config.ejemplo.json      # plantilla de configuración
+│   └── README.md                # instalación y uso
+├── escuadron/                   # página del escuadrón (escuadronvengance.cl, ver su README)
+│   ├── index.html               # hero, rotación en vivo, roster de 30, únete
+│   ├── jugadores.json           # roster: edítalo para agregar pilotos
+│   ├── rotacion.json            # copia de respaldo del calendario semanal
+│   ├── CNAME                    # dominio (vale en la raíz del repo publicado)
+│   ├── README.md                # guía de edición y despliegue
+│   └── assets/                  # logos, íconos y wallpapers (copia independiente)
 └── assets/
     ├── icon-192.png    # íconos de la app (pantalla de inicio / PWA)
     ├── icon-512.png
