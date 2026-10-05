@@ -6,6 +6,9 @@
 <title>Metalstorm — Rotación de modos en vivo</title>
 <meta name="description" content="Rotación en vivo de los modos de Metalstorm (Team Deathmatch, Air Superiority, Priority Target y más) con temporizador a la próxima rotación.">
 <meta name="theme-color" content="#0b1016">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Coptic&family=Noto+Sans:wght@400;700;800&display=swap">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -50,6 +53,17 @@
   h1{font-size:15px;letter-spacing:.22em;text-transform:uppercase;margin:0;color:var(--muted);font-weight:600}
   .clocks{font-family:var(--mono);font-size:12px;color:var(--muted);text-align:right;line-height:1.6}
   .clocks span{color:var(--text)}
+  /* Línea del escuadrón con su tipografía exacta */
+  .squad-line{
+    text-align:center;margin:0 0 20px;
+    font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;
+  }
+  .squad-line .squad-font{
+    font-family:'Noto Sans Coptic','Noto Sans','Segoe UI Symbol',sans-serif;
+    font-size:16px;letter-spacing:.08em;color:#e0b41f;text-transform:none;
+    text-shadow:0 0 16px rgba(224,180,31,.4);
+  }
 
   /* ---------- Banner de evento ---------- */
   .event-banner{
@@ -93,9 +107,8 @@
     background:linear-gradient(90deg, rgba(9,13,19,.92) 0%, rgba(9,13,19,.76) 50%, rgba(9,13,19,.40) 100%);
   }
   .card-inner{position:relative;z-index:2}
-  /* Borde negro en las letras de la tarjeta para distinguirlas del fondo */
-  .card .names .es,
-  .card .chip{
+  /* Borde negro en el título de la tarjeta para distinguirlo del fondo */
+  .card .names .es{
     text-shadow:
       -1px -1px 0 rgba(0,0,0,.9),
       1px -1px 0 rgba(0,0,0,.9),
@@ -142,26 +155,31 @@
   .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
   .chips[hidden]{display:none}
   .chip{
-    display:flex;align-items:center;gap:9px;
-    padding:8px 13px;border-radius:11px;
-    background:rgba(255,255,255,.055);
-    border:1px solid rgba(255,255,255,.11);
-    font-size:13.5px;font-weight:600;
-    backdrop-filter:blur(2px);
-  }
-  .mapthumb{
-    width:56px;height:32px;border-radius:9px;flex:0 0 auto;
+    position:relative;overflow:hidden;flex:1 1 0;min-width:0;
+    min-height:92px;border-radius:13px;
+    display:flex;flex-direction:column;justify-content:flex-end;
+    padding:10px 14px;
+    background-color:rgba(10,16,24,.85);
     background-position:center;background-size:cover;background-repeat:no-repeat;
-    background-color:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.22);
-    box-shadow:0 2px 8px rgba(0,0,0,.45);
+    border:1px solid rgba(255,255,255,.14);
+    font-size:13.5px;font-weight:600;
   }
-  .chip b{
-    font-size:10px;letter-spacing:.15em;text-transform:uppercase;
-    color:var(--muted);font-weight:700;white-space:nowrap;
+  .chip::before{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(180deg, rgba(9,13,19,.12) 0%, rgba(9,13,19,.55) 55%, rgba(9,13,19,.90) 100%);
   }
-  .chip.next{border-style:dashed;opacity:.95}
-  .chip.next span{color:#d7e4ef}
+  .chip > *{position:relative;z-index:1}
+  .chip.next{border-style:dashed}
+  .chip .mapbox-tag{
+    position:absolute;top:8px;left:12px;
+    font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:800;
+    color:#fff;opacity:.92;background:rgba(9,13,19,.55);
+    padding:3px 8px;border-radius:6px;border:1px solid rgba(255,255,255,.16);
+  }
+  .chip .mapbox-name{
+    font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;
+    text-shadow:-1px -1px 0 rgba(0,0,0,.9),1px -1px 0 rgba(0,0,0,.9),-1px 1px 0 rgba(0,0,0,.9),1px 1px 0 rgba(0,0,0,.9),0 2px 8px rgba(0,0,0,.85);
+  }
   #mapNow,#mapNext{text-transform:uppercase;letter-spacing:.02em}
 
   .timer-row{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-top:18px;flex-wrap:wrap}
@@ -288,9 +306,8 @@
     .names{flex:1;min-width:0}
     .badge{margin-left:6px;padding:6px 9px;font-size:12px}
     .desc{margin-top:12px;font-size:12.5px}
-    .chips{margin-top:12px;gap:8px}
-    .chip{padding:7px 11px;font-size:12.5px;gap:7px}
-    .chip b{font-size:9.5px}
+    .chips{margin-top:12px;gap:8px;flex-direction:column}
+    .chip{min-height:84px}
     .timer-row{margin-top:16px;gap:10px}
     .timer-label,.next .lbl{font-size:11px}
     .next{text-align:left;min-width:0}
@@ -317,8 +334,6 @@
     ul.schedule li{grid-template-columns:auto 1fr auto;grid-template-areas:"t m tag" "t mp mp"}
     ul.schedule .ico{display:none}
     .names .en{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .chip b{display:block}
-    .chip{flex-direction:column;gap:2px}
   }
 </style>
 </head>
@@ -334,6 +349,7 @@
       Local <span id="clockLocal">--:--:--</span>
     </div>
   </header>
+  <div class="squad-line">Por el escuadrón <span class="squad-font">Ѵⲉⲛⳋⲁⲛⲥⲉ</span></div>
 
   <div class="event-banner" id="eventBanner" hidden>
     <span class="ev-dot"></span>
@@ -356,8 +372,8 @@
       <div class="desc" id="modeDesc">—</div>
 
       <div class="chips" id="chips" hidden>
-        <span class="chip"><b>Mapa actual</b><span class="mapthumb" id="mapThumbNow"></span><span id="mapNow">—</span></span>
-        <span class="chip next"><b>Próximo mapa</b><span class="mapthumb" id="mapThumbNext"></span><span id="mapNext">—</span></span>
+        <span class="chip" id="chipNow"><span class="mapbox-tag">Mapa actual</span><span class="mapbox-name" id="mapNow">—</span></span>
+        <span class="chip next" id="chipNext"><span class="mapbox-tag">Próximo mapa</span><span class="mapbox-name" id="mapNext">—</span></span>
       </div>
 
       <div class="timer-row">
@@ -596,7 +612,7 @@ const els = {
   bgA:$('bgA'), bgB:$('bgB'),
   evBanner:$('eventBanner'), evText:$('eventText'),
   chips:$('chips'), mapNow:$('mapNow'), mapNext:$('mapNext'),
-  mapThumbNow:$('mapThumbNow'), mapThumbNext:$('mapThumbNext')
+  chipNow:$('chipNow'), chipNext:$('chipNext')
 };
 
 let ultimoSlot = 0;
@@ -645,12 +661,11 @@ function setFavicon(tag, color) {
   } catch (e) {}
 }
 
-function setThumb(el, s) {
+function setChipFondo(el, s) {
   const m = (s && MAPAS[s.mapa] && MAPAS[s.mapa].wall) || '';
-  if (el.dataset.thumb === m) return;
-  el.dataset.thumb = m;
+  if (el.dataset.fondo === m) return;
+  el.dataset.fondo = m;
   el.style.backgroundImage = m ? 'url("' + m + '")' : 'none';
-  el.style.display = m ? '' : 'none';
 }
 
 function render() {
@@ -707,8 +722,8 @@ function render() {
     els.chips.hidden = false;
     set('mapNow', els.mapNow, sNow.nombre);
     set('mapNext', els.mapNext, sNext ? sNext.nombre : '—');
-    setThumb(els.mapThumbNow, sNow);
-    setThumb(els.mapThumbNext, sNext);
+    setChipFondo(els.chipNow, sNow);
+    setChipFondo(els.chipNext, sNext);
   } else {
     els.chips.hidden = true;
   }
