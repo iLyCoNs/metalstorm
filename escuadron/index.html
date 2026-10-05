@@ -33,6 +33,19 @@
     overflow-x:hidden;
   }
   /* patrón triangular del juego, sutil */
+  /* ---------- chip de código de escuadrón ---------- */
+  .code-chip{
+    display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap;
+    margin-top:22px;padding:11px 16px;border-radius:12px;cursor:pointer;
+    background:rgba(224,180,31,.07);border:1px dashed color-mix(in srgb, var(--gold) 60%, transparent);
+    color:var(--text);font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;
+    transition:.2s;
+  }
+  .code-chip:hover{border-style:solid;background:rgba(224,180,31,.14);box-shadow:0 0 24px rgba(224,180,31,.25)}
+  .code-chip b{font-family:var(--mono);font-size:17px;letter-spacing:.1em;color:var(--gold)}
+  .code-chip .copy{font-size:10.5px;letter-spacing:.18em;color:var(--muted);border:1px solid var(--line2);
+                   border-radius:7px;padding:5px 10px}
+  .code-chip:hover .copy{color:var(--text);border-color:var(--gold)}
   .tris{
     position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
     background-image:
@@ -447,6 +460,9 @@
       <div class="stat"><b>6</b><span>Roles</span></div>
       <div class="stat"><b>CL</b><span>Base</span></div>
     </div>
+    <button class="code-chip" id="codeHero" type="button">
+      Código de escuadrón <b data-codigo>#3REFA3</b> <span class="copy">Copiar</span>
+    </button>
   </div>
 </section>
 
@@ -573,6 +589,9 @@
         <h3>¿Listo para volar con nosotros?</h3>
         <p id="joinNota">Escríbenos y te damos la bienvenida al ala.</p>
       </div>
+      <button class="code-chip" id="codeJoin" type="button">
+        En el juego: Buscar escuadrón → <b data-codigo>#3REFA3</b> <span class="copy">Copiar</span>
+      </button>
       <a class="btn discord" id="joinDiscord" href="#unete">Postular</a>
     </div>
   </section>
@@ -605,6 +624,7 @@
 const CONFIG = {
   escuadron: 'Escuadrón Vengance',
   dominio: 'escuadronvengance.cl',
+  codigo: '#3REFA3',   // código de escuadrón del juego (Buscar un escuadrón)
   discord: '',     // ej: 'https://discord.gg/xxxxxxx'  (se usa en los botones de unirse)
   contacto: '',    // ej: 'contacto@escuadronvengance.cl'
   timer: 'https://ilycons.github.io/metalstorm/'   // temporizador de rotación
@@ -933,6 +953,33 @@ async function cargarEscuadrones() {
 function iniciarEnlaces() {
   $('dominio').textContent = CONFIG.dominio;
   document.title = CONFIG.escuadron + ' — Ala de combate Metalstorm';
+
+  document.querySelectorAll('[data-codigo]').forEach(el => { el.textContent = CONFIG.codigo || '#3REFA3'; });
+  document.querySelectorAll('.code-chip').forEach(chip => {
+    chip.addEventListener('click', async () => {
+      const codigo = CONFIG.codigo || '#3REFA3';
+      const label = chip.querySelector('.copy');
+      const original = label ? label.textContent : '';
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(codigo);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = codigo;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        if (label) {
+          label.textContent = '¡Copiado!';
+          setTimeout(() => { label.textContent = original; }, 1600);
+        }
+      } catch (e) {
+        if (label) label.textContent = codigo;
+      }
+    });
+  });
 
   const btnDiscord = $('joinDiscord');
   const btnHero = $('heroDiscord');

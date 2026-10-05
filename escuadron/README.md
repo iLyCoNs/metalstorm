@@ -43,6 +43,7 @@ Arriba del `<script>` de `index.html`, en `CONFIG`:
 ```js
 discord: 'https://discord.gg/xxxxxxx',  // invita al Discord del escuadrón
 contacto: '',                            // o un correo, si prefieren email
+codigo: '#3REFA3',                        // código de escuadrón del juego (con botón copiar)
 ```
 
 Eso activa los botones "Unirse al escuadrón" y "Postular". Sin configurar, aparecen
