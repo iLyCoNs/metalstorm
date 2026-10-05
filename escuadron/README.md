@@ -55,6 +55,26 @@ usa su copia local `rotacion.json`. Al publicar parches del juego, regenera con
 `../tools/actualizar-rotacion.py` y copia el JSON nuevo también aquí
 (o deja que use el `../rotacion.json` del mismo sitio).
 
+## Noticias oficiales
+
+La sección toma las noticias del propio juego (`noticias.json` + `assets/news/`),
+generadas con:
+
+```bash
+python ../tools/actualizar-noticias.py
+```
+
+El script descarga el feed oficial del juego y las imágenes de cada noticia. Repítelo
+cada cierto tiempo (o tras cada parche) y sube los cambios: la página muestra la fecha
+de actualización sola.
+
+## Directorio de escuadrones
+
+Edita **`escuadrones.json`** para agregar escuadrones (tag, nombre, región, miembros,
+discord, descripción). El primero con `"destacado": true` se resalta como el anfitrión.
+No existe un registro oficial público: este directorio es comunitario y se llena por
+pull request.
+
 ## Publicar en escuadronvengance.cl
 
 1. **Opción A (recomendada para el dominio)**: crea un repositorio nuevo (ej. `escuadron`),
@@ -76,10 +96,13 @@ usa su copia local `rotacion.json`. Al publicar parches del juego, regenera con
 escuadron/
 ├── index.html        # la página (HTML + CSS + JS, sin dependencias)
 ├── jugadores.json    # roster: edítalo para agregar pilotos
+├── noticias.json     # noticias oficiales (generado, ver abajo)
+├── escuadrones.json  # directorio comunitario de escuadrones
 ├── rotacion.json     # copia de respaldo del calendario semanal
 ├── CNAME             # dominio (solo vale en la raíz del repo publicado)
 ├── README.md
-└── assets/           # logos, íconos de modo y wallpapers
+└── assets/           # logos, íconos, wallpapers, minimapas e imágenes de noticias
+    └── news/         # imágenes de las noticias oficiales
 ```
 
 ## Aviso

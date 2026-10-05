@@ -133,6 +133,36 @@
   .stat b{display:block;font-family:var(--mono);font-size:26px;line-height:1}
   .stat span{display:block;margin-top:6px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
 
+  /* ---------- franja en vivo del inicio ---------- */
+  .live{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:26px;max-width:860px}
+  @media (max-width:680px){.live{grid-template-columns:1fr}}
+  .live-card{
+    position:relative;overflow:hidden;border-radius:15px;padding:18px 18px 16px;
+    background:rgba(13,20,29,.78);border:1px solid var(--line2);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    clip-path:polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+  }
+  .live-card::before{
+    content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--lc,#4a9be0);
+    box-shadow:0 0 16px var(--lc,#4a9be0);
+  }
+  .live-tag{
+    display:flex;align-items:center;gap:8px;
+    font-size:10.5px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);
+  }
+  .live-tag i{width:8px;height:8px;border-radius:50%;background:var(--lc,#4a9be0);box-shadow:0 0 10px var(--lc,#4a9be0);animation:blink 1.8s ease-in-out infinite}
+  .live-tag .t{font-family:var(--mono);color:var(--text);letter-spacing:.06em}
+  .live-mode{display:flex;align-items:center;gap:13px;margin-top:13px}
+  .live-mode .mico{
+    width:38px;height:38px;flex:0 0 auto;display:block;background:var(--lc,#4a9be0);
+    -webkit-mask-position:center;-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;
+    mask-position:center;mask-size:contain;mask-repeat:no-repeat;
+    filter:drop-shadow(0 0 10px color-mix(in srgb, var(--lc,#4a9be0) 70%, transparent));
+  }
+  .live-mode b{display:block;font-size:clamp(16px,3.4vw,21px);font-weight:800;text-transform:uppercase;letter-spacing:.02em;line-height:1.15}
+  .live-mode small{display:block;color:var(--muted);font-size:12.5px;margin-top:4px}
+  .live-mode small .mapa{color:#cfdde8;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+
   /* ---------------- secciones ---------------- */
   section{padding:64px 0 8px}
   .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:22px}
@@ -291,6 +321,62 @@
     text-shadow:0 0 18px rgba(224,180,31,.35);
   }
 
+  /* ---------- noticias ---------- */
+  .news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+  .news-card{
+    overflow:hidden;border-radius:15px;border:1px solid var(--line2);
+    background:linear-gradient(160deg,var(--panel),var(--panel2));
+    clip-path:polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .news-card:hover{transform:translateY(-4px);border-color:var(--cyan);
+                   box-shadow:0 16px 40px rgba(0,0,0,.5)}
+  .news-img{position:relative;aspect-ratio:1200/167;overflow:hidden;background:#060b11}
+  .news-img img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+  .news-body{padding:16px 16px 18px}
+  .news-date{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--cyan);text-transform:uppercase}
+  .news-body h3{margin:8px 0 0;font-size:16.5px;text-transform:uppercase;letter-spacing:.03em;line-height:1.3}
+  .news-more{display:none;margin-top:12px}
+  .news-card.open .news-more{display:block}
+  .news-more img{width:100%;border-radius:10px;margin-top:10px;border:1px solid var(--line)}
+  .news-toggle{
+    margin-top:13px;display:inline-flex;align-items:center;gap:8px;
+    background:none;border:1px solid var(--line2);color:var(--text);border-radius:9px;
+    padding:9px 14px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  }
+  .news-toggle:hover{border-color:var(--cyan)}
+  .news-card.open .news-toggle .chev{transform:rotate(180deg)}
+  .news-toggle .chev{display:inline-block;transition:.2s}
+  .news-cta{margin-top:13px;display:inline-flex}
+  .news-meta{margin-top:14px;font-size:12px;color:var(--muted)}
+
+  /* ---------- directorio de escuadrones ---------- */
+  .squad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+  .squad-card{
+    position:relative;padding:18px;border-radius:15px;overflow:hidden;
+    background:linear-gradient(155deg,var(--panel),var(--panel2));
+    border:1px solid var(--line2);
+    clip-path:polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+    transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+  }
+  .squad-card:hover{transform:translateY(-4px);border-color:var(--gold)}
+  .squad-card.destacado{border-color:color-mix(in srgb, var(--gold) 55%, var(--line2));
+                        box-shadow:0 0 30px rgba(224,180,31,.12)}
+  .squad-tag{
+    display:inline-block;font-family:var(--mono);font-weight:800;font-size:12px;
+    color:#06121d;background:var(--gold);border-radius:7px;padding:5px 9px;letter-spacing:.06em;
+  }
+  .squad-card h3{margin:11px 0 2px;font-size:19px;text-transform:uppercase;letter-spacing:.03em}
+  .squad-card .region{font-size:11.5px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase}
+  .squad-card p{margin:11px 0 0;color:#c3d2de;font-size:13px;line-height:1.6}
+  .squad-foot{display:flex;align-items:center;gap:10px;margin-top:15px;flex-wrap:wrap}
+  .squad-foot .members{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .squad-foot a{margin-left:auto;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+                color:var(--cyan);text-decoration:none}
+  .squad-foot a:hover{text-decoration:underline}
+  .squad-ahora{position:absolute;top:14px;right:14px;font-size:9.5px;font-weight:800;letter-spacing:.14em;
+               text-transform:uppercase;color:#06121d;background:var(--gold);border-radius:6px;padding:4px 8px}
+
   /* animación de entrada */
   .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease, transform .7s ease}
   .reveal.in{opacity:1;transform:none}
@@ -316,6 +402,8 @@
       <a href="#inicio">Inicio</a>
       <a href="#rotacion">Rotación</a>
       <a href="#pilotos">Pilotos</a>
+      <a href="#noticias">Noticias</a>
+      <a href="#comunidad">Comunidad</a>
       <a href="#unete">Únete</a>
     </nav>
   </div>
@@ -338,6 +426,20 @@
       <a class="btn primary" href="#pilotos">Ver pilotos</a>
       <a class="btn discord" id="heroDiscord" href="#unete">Unirse al escuadrón</a>
       <a class="btn ghost" id="heroTimer" href="https://ilycons.github.io/metalstorm/" target="_blank" rel="noopener">Rotación en vivo</a>
+    </div>
+    <div class="live">
+      <div class="live-card" id="liveNow">
+        <div class="live-tag"><i></i>Ahora · <span class="t" id="liveTimer">--:--</span></div>
+        <div class="live-mode"><i class="mico" id="liveIcon"></i>
+          <div><b id="liveMode">Cargando…</b><small>Mapa actual: <span class="mapa" id="liveMap">—</span></small></div>
+        </div>
+      </div>
+      <div class="live-card" id="liveNext">
+        <div class="live-tag"><i></i>Próximo · <span class="t" id="liveNextTime">—</span></div>
+        <div class="live-mode"><i class="mico" id="liveIconNext"></i>
+          <div><b id="liveNextMode">—</b><small>Mapa: <span class="mapa" id="liveNextMap">—</span></small></div>
+        </div>
+      </div>
     </div>
     <div class="stats">
       <div class="stat"><b id="statCupos">30</b><span>Cupos</span></div>
@@ -414,6 +516,28 @@
     </div>
 
     <div class="grid" id="roster"></div>
+  </section>
+
+  <!-- ============ NOTICIAS ============ -->
+  <section id="noticias" class="reveal">
+    <div class="sec-head">
+      <h2><small>Del juego</small>Noticias oficiales</h2>
+      <p>Lo último publicado en Metalstorm: parches, pases de vuelo, eventos y torneos.</p>
+    </div>
+    <div class="news-grid" id="newsGrid">
+      <p style="color:var(--muted)">Cargando noticias…</p>
+    </div>
+    <p class="news-meta" id="newsMeta"></p>
+  </section>
+
+  <!-- ============ COMUNIDAD ============ -->
+  <section id="comunidad" class="reveal">
+    <div class="sec-head">
+      <h2><small>Directorio</small>Escuadrones de la comunidad</h2>
+      <p>No existe un registro oficial público de escuadrones: este directorio lo construimos
+         entre todos. ¿Tienes escuadrón? Agrégalo con un pull request al repositorio.</p>
+    </div>
+    <div class="squad-grid" id="squadGrid"></div>
   </section>
 
   <!-- ============ ÚNETE ============ -->
@@ -590,26 +714,45 @@ function pintarRotacion() {
   th.style.backgroundImage = wall ? 'url("' + wall + '")' : 'none';
   th.style.display = wall ? '' : 'none';
   rotSlot = s.indice;
+
+  /* franja en vivo del inicio */
+  $('liveTimer').textContent = mmss(restante);
+  $('liveMode').textContent = modo.es;
+  $('liveMap').textContent = s.nombre;
+  $('liveNextTime').textContent = fmtHora(fin);
+  if (sSig) {
+    $('liveNextMode').textContent = sig.es;
+    $('liveNextMap').textContent = sSig.nombre;
+  }
+  const lc = $('liveNow');
+  lc.style.setProperty('--lc', modo.color);
+  const li = $('liveIcon');
+  li.style.background = modo.color;
+  li.style.webkitMaskImage = 'url("' + modo.icon + '")';
+  li.style.maskImage = 'url("' + modo.icon + '")';
+  const lnc = $('liveNext');
+  lnc.style.setProperty('--lc', sig.color);
+  const lin = $('liveIconNext');
+  lin.style.background = sig.color;
+  lin.style.webkitMaskImage = 'url("' + sig.icon + '")';
+  lin.style.maskImage = 'url("' + sig.icon + '")';
+  heroFondo(wall);
 }
 
 /* ============================================================================
-   HERO — fondos que van rotando
+   HERO — fondo = mapa actual
    ========================================================================== */
-function iniciarHero() {
-  const validos = ['assets/wall-canyon.jpg', 'assets/wall-arctic.jpg', 'assets/wall-seastacks.jpg',
-                   'assets/wall-volcano.jpg', 'assets/wall-stoneforest.jpg'];
+let heroFrente = 0;
+function heroFondo(url) {
+  if (!url) return;
   const capas = [$('heroA'), $('heroB')];
-  let frente = 0, k = 0;
-  const mostrar = (url) => {
-    const sig = 1 - frente;
-    capas[sig].style.backgroundImage = 'url("' + url + '")';
-    capas[sig].classList.add('show');
-    capas[frente].classList.remove('show');
-    frente = sig;
-  };
-  mostrar(validos[0]); k = 1;
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  setInterval(() => { mostrar(validos[k % validos.length]); k++; }, 9000);
+  if (capas[heroFrente].dataset.url === url) return;
+  const sig = 1 - heroFrente;
+  capas[sig].style.backgroundImage = 'url("' + url + '")';
+  capas[sig].dataset.url = url;
+  capas[sig].classList.add('show');
+  capas[heroFrente].classList.remove('show');
+  heroFrente = sig;
 }
 
 /* ============================================================================
@@ -706,6 +849,85 @@ function pintarFiltros() {
 }
 
 /* ============================================================================
+   NOTICIAS OFICIALES (noticias.json generado del juego)
+   ========================================================================== */
+const MESES = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+function fmtFecha(iso) {
+  try {
+    const p = String(iso).split('-');
+    if (p.length < 3) return '';
+    return parseInt(p[2], 10) + ' ' + MESES[parseInt(p[1], 10) - 1] + ' ' + p[0];
+  } catch (e) { return ''; }
+}
+
+async function cargarNoticias() {
+  const grid = $('newsGrid');
+  try {
+    const r = await fetch('noticias.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) throw new Error('http');
+    const j = await r.json();
+    const lista = Array.isArray(j.noticias) ? j.noticias : [];
+    if (!lista.length) throw new Error('vacío');
+    grid.innerHTML = lista.map(n => {
+      const imgs = Array.isArray(n.imagenes) ? n.imagenes : [];
+      const portada = imgs[0] || '';
+      const resto = imgs.slice(1);
+      const fecha = n.fecha ? '<div class="news-date">' + fmtFecha(n.fecha) + '</div>' : '';
+      const mas = (resto.length || n.boton) ?
+        '<div class="news-more">' +
+          resto.map(u => '<img loading="lazy" src="' + u + '" alt="">').join('') +
+          (n.boton && n.boton.url ? '<a class="btn ghost news-cta" href="' + n.boton.url + '" target="_blank" rel="noopener">' + (n.boton.texto || 'Abrir enlace') + '</a>' : '') +
+        '</div>' : '';
+      const toggle = (resto.length || n.boton) ?
+        '<button class="news-toggle" type="button">Ver más <span class="chev">▾</span></button>' : '';
+      return '<article class="news-card">' +
+        (portada ? '<div class="news-img"><img loading="lazy" src="' + portada + '" alt=""></div>' : '') +
+        '<div class="news-body">' + fecha + '<h3>' + n.titulo + '</h3>' + mas + toggle + '</div>' +
+      '</article>';
+    }).join('');
+    grid.querySelectorAll('.news-card').forEach(card => {
+      const btn = card.querySelector('.news-toggle');
+      if (btn) btn.addEventListener('click', () => card.classList.toggle('open'));
+    });
+    $('newsMeta').textContent = 'Fuente: noticias oficiales del juego' +
+      (j.actualizado ? ' · actualizado ' + fmtFecha(j.actualizado) : '') + '.';
+  } catch (e) {
+    grid.innerHTML = '<p style="color:var(--muted)">No se pudieron cargar las noticias ahora mismo.</p>';
+  }
+}
+
+/* ============================================================================
+   DIRECTORIO DE ESCUADRONES (comunitario)
+   ========================================================================== */
+async function cargarEscuadrones() {
+  const grid = $('squadGrid');
+  try {
+    const r = await fetch('escuadrones.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) throw new Error('http');
+    const j = await r.json();
+    const lista = Array.isArray(j.escuadrones) ? j.escuadrones : [];
+    if (!lista.length) throw new Error('vacío');
+    grid.innerHTML = lista.map(s => {
+      const url = s.url || (s.discord || '');
+      return '<article class="squad-card' + (s.destacado ? ' destacado' : '') + '">' +
+        (s.destacado ? '<span class="squad-ahora">Este escuadrón</span>' : '') +
+        '<span class="squad-tag">' + (s.tag || 'SQ') + '</span>' +
+        '<h3>' + s.nombre + '</h3>' +
+        '<div class="region">' + (s.region || 'Sin región') + '</div>' +
+        (s.descripcion ? '<p>' + s.descripcion + '</p>' : '') +
+        '<div class="squad-foot">' +
+          '<span class="members">' + (s.miembros != null ? s.miembros + ' pilotos' : '') + '</span>' +
+          (url ? '<a href="' + url + '"' + (String(url).startsWith('#') ? '' : ' target="_blank" rel="noopener"') + '>' +
+            (s.destacado ? 'Ver plantilla' : 'Contactar') + '</a>' : '') +
+        '</div>' +
+      '</article>';
+    }).join('');
+  } catch (e) {
+    grid.innerHTML = '<p style="color:var(--muted)">Directorio no disponible por ahora.</p>';
+  }
+}
+
+/* ============================================================================
    INTERACCIÓN
    ========================================================================== */
 function iniciarEnlaces() {
@@ -745,10 +967,11 @@ function iniciarReveal() {
 
 (async function iniciar() {
   iniciarEnlaces();
-  iniciarHero();
   iniciarReveal();
   await cargarRotacion();
   await cargarJugadores();
+  await cargarNoticias();
+  await cargarEscuadrones();
   pintarFiltros();
   pintarRoster();
   pintarRotacion();

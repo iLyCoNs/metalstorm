@@ -1,0 +1,121 @@
+{
+ "actualizado": "2026-10-05T21:04:33Z",
+ "fuente": "news.json oficial del juego (CDN de Starform)",
+ "total": 9,
+ "noticias": [
+  {
+   "id": "2026_9_29_desktop_ui",
+   "titulo": "Actualización del juego",
+   "fecha": "2026-09-29",
+   "imagenes": [
+    "assets/news/2026_9_29_desktop_ui-0-header-image.jpg",
+    "assets/news/2026_9_29_desktop_ui-1-body-image.jpg"
+   ],
+   "boton": null
+  },
+  {
+   "id": "flight-pass-60",
+   "titulo": "Flight Pass 60",
+   "fecha": null,
+   "imagenes": [
+    "assets/news/flight_pass_60-0-fp-header.jpg",
+    "assets/news/flight_pass_60-1-fp-cosmetics.jpg"
+   ],
+   "boton": {
+    "texto": "Ver en la tienda",
+    "url": "https://www.playmetalstorm.com/shop#flightpass"
+   }
+  },
+  {
+   "id": "f20_tigershark_black_market",
+   "titulo": "F-20 Tigershark — Black Market",
+   "fecha": null,
+   "imagenes": [
+    "assets/news/f20_tigershark_black_market-0-header.jpg",
+    "assets/news/f20_tigershark_black_market-1-ability.jpg"
+   ],
+   "boton": {
+    "texto": "Ver video",
+    "url": "https://www.youtube.com/channel/UC18ril4WzSwAx44wt3d0t8A"
+   }
+  },
+  {
+   "id": "2026-9-8-mcs-reminder",
+   "titulo": "MCS — Recordatorio",
+   "fecha": "2026-09-08",
+   "imagenes": [
+    "assets/news/2026_9_8_mcs_reminder-0-header-image.jpg",
+    "assets/news/2026_9_8_mcs_reminder-1-body-image.jpg"
+   ],
+   "boton": {
+    "texto": "Abrir enlace",
+    "url": "https://linktr.ee/playmetalstorm"
+   }
+  },
+  {
+   "id": "2026_8_26_f18_lastcall",
+   "titulo": "F18 — Última llamada",
+   "fecha": "2026-08-26",
+   "imagenes": [
+    "assets/news/2026_8_26_f18_lastcall-0-fa-18.jpg"
+   ],
+   "boton": {
+    "texto": "Ver video",
+    "url": "https://youtube.com/shorts/6Oy43h0RN6Y?si=icgtpAIXP-L-AO1B"
+   }
+  },
+  {
+   "id": "2026_9_1_matcherino",
+   "titulo": "Matcherino (torneo comunitario)",
+   "fecha": "2026-09-01",
+   "imagenes": [
+    "assets/news/2026_9_1_matcherino-0-header-image.jpg",
+    "assets/news/2026_9_1_matcherino-1-body-image.jpg"
+   ],
+   "boton": {
+    "texto": "Abrir enlace",
+    "url": "https://www.matcherino.com/metalstorm"
+   }
+  },
+  {
+   "id": "flight-pass-59",
+   "titulo": "Flight Pass 59",
+   "fecha": null,
+   "imagenes": [
+    "assets/news/flight_pass_59-0-fp-header.jpg",
+    "assets/news/flight_pass_59-1-fp-cosmetics.jpg"
+   ],
+   "boton": {
+    "texto": "Ver en la tienda",
+    "url": "https://www.playmetalstorm.com/shop#flightpass"
+   }
+  },
+  {
+   "id": "2026_8_11_fa18_ctf",
+   "titulo": "F/A-18 — Captura la Bandera",
+   "fecha": "2026-08-11",
+   "imagenes": [
+    "assets/news/2026_8_11_fa18_ctf-0-header-image.jpg",
+    "assets/news/2026_8_11_fa18_ctf-1-CTF.jpg",
+    "assets/news/2026_8_11_fa18_ctf-2-fa-18.jpg"
+   ],
+   "boton": {
+    "texto": "Unirse al Discord",
+    "url": "discord.gg/metalstorm"
+   }
+  },
+  {
+   "id": "2026_8_1_matcherino",
+   "titulo": "Matcherino (torneo comunitario)",
+   "fecha": "2026-08-01",
+   "imagenes": [
+    "assets/news/2026_8_1_matcherino-0-header-image.jpg",
+    "assets/news/2026_8_1_matcherino-1-body-image.jpg"
+   ],
+   "boton": {
+    "texto": "Abrir enlace",
+    "url": "https://tr.ee/RfPGaa"
+   }
+  }
+ ]
+}

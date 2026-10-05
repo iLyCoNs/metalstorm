@@ -1,0 +1,16 @@
+{
+  "actualizado": "2026-10-05",
+  "nota": "Directorio comunitario de escuadrones de Metalstorm. No existe un registro oficial público: los escuadrones se agregan manualmente con pull request.",
+  "escuadrones": [
+    {
+      "tag": "[FACH]",
+      "nombre": "Vengance",
+      "region": "Chile",
+      "miembros": 1,
+      "discord": "",
+      "descripcion": "Ala de combate aéreo: roles definidos, coordinación por voz y presencia en cada rotación de modos.",
+      "destacado": true,
+      "url": "#inicio"
+    }
+  ]
+}
